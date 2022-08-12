@@ -3,7 +3,7 @@
 Copy contents of `perf-bash-completion.sh` file to `~/.bash_completion`.  
 open new terminal and try auto completion.
 
-> I have made this script based on help message of perf.
+> I made this script based on help message of perf.
 
 
 ```sh
