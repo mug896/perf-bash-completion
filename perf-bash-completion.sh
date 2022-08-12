@@ -161,8 +161,11 @@ _perf_SET_CMD()
             [[ ${#ARR[@]} = 4 ]] && { CMD3=${ARR[2]} CMD4=${ARR[3]} ;}
             ;;
         mem)
-            [[ $COMP_LINE =~ " record" ]] && CMD3=record
-            [[ $COMP_LINE =~ " report" ]] && CMD3=report
+            [[ $COMP_LINE =~ $(echo ' record\b') ]] && CMD3=record
+            [[ $COMP_LINE =~ $(echo ' report\b') ]] && CMD3=report
+            ;;
+        test)
+            [[ $COMP_LINE =~ $(echo ' list\b') ]] && CMD3=list
     esac
     return 0
 }
