@@ -87,12 +87,6 @@ _perf_script()
         _perf_record
     fi
 }
-_perf_stat() 
-{
-    if _perf_CHECK @ "$CMD3"; then
-        WORDS="record report" 
-    fi
-}
 _perf_top() 
 { 
     if _perf_CHECK -s --sort --fields; then
@@ -293,7 +287,7 @@ _perf()
             report) _perf_report ;;
             sched) _perf_sched ;;
             script) _perf_script ;;
-            stat) _perf_stat ;;
+            stat) _perf_CHECK @ "$CMD3" && WORDS="record report" ;;
             test) _perf_CHECK @ "$CMD3" && WORDS="list" ;;
             timechart) _perf_CHECK @ "$CMD3" && WORDS="record" ;;
             top) _perf_top ;;
