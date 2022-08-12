@@ -7,10 +7,10 @@ open new terminal and try auto completion !
 
 
 ```sh
-bash$ lsb_release -a
-Description:    Ubuntu 22.04.1 LTS
-Release:        22.04
-Codename:       jammy
+bash$ hostnamectl
+Operating System: Ubuntu 22.04.1 LTS
+          Kernel: Linux 5.15.0-43-generic
+    Architecture: x86-64
 
 bash$ perf -v
 perf version 5.15.39
