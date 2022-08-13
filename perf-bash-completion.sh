@@ -142,9 +142,9 @@ _perf_SET_CMD()
             if [[ -z $CMD3 ]]; then
                 echo; eval "sudo $COMP_LINE -h"
                 return 1
-            else
-                [[ $CMD2 = $CMD3 ]] && CMD3="" 
-            fi ;;
+            fi
+            [[ $CMD2 = $CMD3 ]] && CMD3="" 
+            ;;
         daemon|data|iostat) 
             [[ $COMP_CWORD -ge 3 && ${COMP_WORDS[2]} != -* ]] && CMD3=${COMP_WORDS[2]}
             ;;
