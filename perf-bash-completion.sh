@@ -3,7 +3,7 @@ _perf_c2c()
     if _perf_CHECK @ "$CMD3"; then
         WORDS="record report" 
     elif [[ $CMD3 = record ]] && _perf_CHECK -e --event; then
-        WORDS=$( sudo perf c2c record -e list |& awk '{print $1}' ) 
+        WORDS=$( sudo $CMD c2c record -e list |& awk '{print $1}' ) 
     fi
 }
 _perf_diff() 
@@ -100,7 +100,7 @@ _perf_mem()
     elif _perf_CHECK @ "$CMD3"; then
         WORDS="record report" 
     elif [[ $CMD3 = record ]] && _perf_CHECK -e --event; then
-        WORDS=$( sudo perf mem record -e list |& awk '{print $1}' )
+        WORDS=$( sudo $CMD mem record -e list |& awk '{print $1}' )
     fi
 }
 _perf_sched() 
@@ -244,12 +244,12 @@ _perf()
         elif _perf_CHECK --stdio-color; then
             WORDS="always never auto"
         elif _perf_CHECK --switch-on --switch-off; then
-            WORDS=$( sudo perf evlist | sed -E '/^\s*#/d' )
+            WORDS=$( sudo $CMD evlist | sed -E '/^\s*#/d' )
         elif _perf_CHECK -I --intr-regs; then
             [[ $CMD2 != @(sched|stat) ]] &&
-            WORDS=$( sudo perf record -I? |& sed -En '/available registers:/{ s///p }' )
+            WORDS=$( sudo $CMD record -I? |& sed -En '/available registers:/{ s///p }' )
         elif _perf_CHECK --user-regs; then
-            WORDS=$( sudo perf record --user-regs=? |& sed -En '/available registers:/{ s///p }' )
+            WORDS=$( sudo $CMD record --user-regs=? |& sed -En '/available registers:/{ s///p }' )
         elif _perf_CHECK -k --clockid; then
             WORDS="CLOCK_REALTIME CLOCK_REALTIME_ALARM CLOCK_REALTIME_COARSE CLOCK_TAI
             CLOCK_MONOTONIC CLOCK_MONOTONIC_COARSE CLOCK_MONOTONIC_RAW CLOCK_BOOTTIME
@@ -257,7 +257,7 @@ _perf()
         elif _perf_CHECK --affinity; then
             WORDS="node cpu"
         elif _perf_CHECK -e --event --switch-output-event; then
-            WORDS=$( sudo perf list --raw-dump )
+            WORDS=$( sudo $CMD list --raw-dump )
         elif _perf_CHECK --switch-output; then
             WORDS="signal size[BKMG] time[smhd]"
         fi
