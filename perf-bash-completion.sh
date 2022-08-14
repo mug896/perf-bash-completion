@@ -166,7 +166,7 @@ _perf_SET_CMD()
 _perf_CHECK()
 {
     if [[ $1 = "@" ]]; then
-        [[ -z $2 && $CUR != "=" && -z $WORDS ]]
+        [[ -z $2 && ! $CUR$PREV$PREV_ =~ ,|=|@ && -z $WORDS ]]
     else
         case $# in
             1) [[ $PREV = $1 || ($LPRE = $1 && $PREV$CUR = *,*) ]] ;;
@@ -184,8 +184,8 @@ _perf()
     ! [[ $COMP_WORDBREAKS = *,* ]] && COMP_WORDBREAKS+=","
 
     local CUR=${COMP_WORDS[COMP_CWORD]}
-    local PREV=${COMP_WORDS[COMP_CWORD-1]}
-    [[ $PREV = "=" ]] && PREV=${COMP_WORDS[COMP_CWORD-2]}
+    local PREV=${COMP_WORDS[COMP_CWORD-1]} PREV_
+    [[ $PREV = "=" ]] && { PREV_=$PREV; PREV=${COMP_WORDS[COMP_CWORD-2]} ;}
     local IFS=$' \t\n' WORDS HELP
     local CMD=${COMP_WORDS[0]} CMD2 CMD3 CMD4
     [[ $COMP_CWORD -ge 2 && ${COMP_WORDS[1]} != -* ]] && CMD2=${COMP_WORDS[1]}
