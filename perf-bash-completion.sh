@@ -2,7 +2,7 @@ _perf_c2c()
 {
     if _perf_CHECK @ "$CMD3"; then
         WORDS="record report" 
-    elif [[ $CMD3 = record ]] && _perf_CHECK -e --event; then
+    elif [[ $CMD3 == record ]] && _perf_CHECK -e --event; then
         WORDS=$( sudo $CMD c2c record -e list |& awk '{print $1}' ) 
     fi
 }
@@ -30,7 +30,7 @@ _perf_kmem()
         WORDS="ptr callsite bytes hit pingpong frag page callsite bytes hit order migtype gfp"
     elif _perf_CHECK @ "$CMD3"; then
         WORDS="record stat"
-    elif [[ $CMD3 = record ]]; then
+    elif [[ $CMD3 == record ]]; then
         _perf_record
     fi
 }
@@ -38,13 +38,13 @@ _perf_kvm()
 {
     if _perf_CHECK @ "$CMD3"; then
         WORDS="top record report diff buildid-list stat"
-    elif [[ $CMD3 = top ]]; then _perf_top
-    elif [[ $CMD3 = record ]]; then _perf_record
-    elif [[ $CMD3 = report ]]; then _perf_report
-    elif [[ $CMD3 = diff ]]; then _perf_diff
-    elif [[ $CMD3 = stat && -z $CMD4 && -z $WORDS ]]; then
+    elif [[ $CMD3 == top ]]; then _perf_top
+    elif [[ $CMD3 == record ]]; then _perf_record
+    elif [[ $CMD3 == report ]]; then _perf_report
+    elif [[ $CMD3 == diff ]]; then _perf_diff
+    elif [[ $CMD3 == stat && -z $CMD4 && -z $WORDS ]]; then
         WORDS="record report live"
-    elif [[ $CMD3 = stat && $CMD4 = @(live|report) ]]; then
+    elif [[ $CMD3 == stat && $CMD4 == @(live|report) ]]; then
         _perf_CHECK --event && WORDS="vmexit mmio ioport"
     fi
 }
@@ -68,9 +68,9 @@ _perf_lock()
 {
     if _perf_CHECK @ "$CMD3"; then
         WORDS="record report script info"
-    elif [[ $CMD3 = script ]]; then
+    elif [[ $CMD3 == script ]]; then
         _perf_script
-    elif [[ $CMD3 = report ]] && _perf_CHECK -k --key; then
+    elif [[ $CMD3 == report ]] && _perf_CHECK -k --key; then
         WORDS="acquired contended avg_wait wait_total wait_max wait_min"
     fi
 }
@@ -83,7 +83,7 @@ _perf_script()
         trace: sw: hw:"
     elif _perf_CHECK @ "$CMD3"; then
         WORDS="record report"
-    elif [[ $CMD3 = record ]]; then
+    elif [[ $CMD3 == record ]]; then
         _perf_record
     fi
 }
@@ -99,7 +99,7 @@ _perf_mem()
         WORDS="load store"
     elif _perf_CHECK @ "$CMD3"; then
         WORDS="record report" 
-    elif [[ $CMD3 = record ]] && _perf_CHECK -e --event; then
+    elif [[ $CMD3 == record ]] && _perf_CHECK -e --event; then
         WORDS=$( sudo $CMD mem record -e list |& awk '{print $1}' )
     fi
 }
@@ -107,11 +107,11 @@ _perf_sched()
 {
     if _perf_CHECK @ "$CMD3"; then
         WORDS="record latency map replay script timehist"
-    elif [[ $CMD3 = record ]]; then
+    elif [[ $CMD3 == record ]]; then
         _perf_record
-    elif [[ $CMD3 = script ]]; then
+    elif [[ $CMD3 == script ]]; then
         _perf_script
-    elif [[ $CMD3 = latency ]] && _perf_CHECK -s --sort; then
+    elif [[ $CMD3 == latency ]] && _perf_CHECK -s --sort; then
         WORDS="runtime switch avg max"
     fi
 }
@@ -123,13 +123,13 @@ _perf_trace()
         WORDS="fp dwarf lbr"
     elif _perf_CHECK @ "$CMD3"; then
         WORDS="record" 
-    elif [[ $CMD3 = record ]]; then
+    elif [[ $CMD3 == record ]]; then
         _perf_record
     fi
 }
 _perf_SET_CMD()
 {
-    if [[ ${PREV:0:1} = "-" && ${CUR:0:1} != "-" ]]; then
+    if [[ ${PREV:0:1} == "-" && ${CUR:0:1} != "-" ]]; then
         local COMP_LINE=${COMP_LINE%$PREV[ =]*}
     else
         local COMP_LINE=${COMP_LINE% *}
@@ -143,7 +143,7 @@ _perf_SET_CMD()
                 echo; eval "sudo $COMP_LINE -h"
                 return 1
             fi
-            [[ $CMD2 = $CMD3 ]] && CMD3="" 
+            [[ $CMD2 == $CMD3 ]] && CMD3="" 
             ;;
         daemon|data|iostat) 
             [[ $COMP_CWORD -ge 3 && ${COMP_WORDS[2]} != -* ]] && CMD3=${COMP_WORDS[2]}
@@ -151,8 +151,8 @@ _perf_SET_CMD()
         kvm)
             local ARR=($( eval "sudo $COMP_LINE -h" |&
                 sed -En '/Usage:/{ s/.*Usage: ([ [:alnum:]_-]+)( [[{].*)?/\1/p }' ))
-            [[ ${#ARR[@]} = 2 && ${ARR[1]} != $CMD2 ]] && CMD3=${ARR[1]}
-            [[ ${#ARR[@]} = 4 ]] && { CMD3=${ARR[2]} CMD4=${ARR[3]} ;}
+            [[ ${#ARR[@]} == 2 && ${ARR[1]} != $CMD2 ]] && CMD3=${ARR[1]}
+            [[ ${#ARR[@]} == 4 ]] && { CMD3=${ARR[2]} CMD4=${ARR[3]} ;}
             ;;
         mem)
             [[ $COMP_LINE =~ $(echo ' record\b') ]] && CMD3=record
@@ -165,13 +165,13 @@ _perf_SET_CMD()
 }
 _perf_CHECK()
 {
-    if [[ $1 = "@" ]]; then
+    if [[ $1 == "@" ]]; then
         [[ -z $2 && ! $CUR$PREV$PREV_ =~ ,|=|@ && -z $WORDS ]]
     else
         case $# in
-            1) [[ $PREV = $1 || ($LPRE = $1 && $PREV$CUR = *,*) ]] ;;
-            2) [[ $PREV = @($1|$2) || ($LPRE = @($1|$2) && $PREV$CUR = *,*) ]] ;;
-            3) [[ $PREV = @($1|$2|$3) || ($LPRE = @($1|$2|$3) && $PREV$CUR = *,*) ]] ;;
+            1) [[ $PREV == $1 || ($LPRE == $1 && $PREV$CUR == *,*) ]] ;;
+            2) [[ $PREV == @($1|$2) || ($LPRE == @($1|$2) && $PREV$CUR == *,*) ]] ;;
+            3) [[ $PREV == @($1|$2|$3) || ($LPRE == @($1|$2|$3) && $PREV$CUR == *,*) ]] ;;
         esac
     fi
 }
@@ -180,21 +180,21 @@ _perf()
     if ! [[ $PROMPT_COMMAND =~ "COMP_WORDBREAKS=" ]]; then
         PROMPT_COMMAND="COMP_WORDBREAKS=${COMP_WORDBREAKS@Q}; "$PROMPT_COMMAND
     fi
-    [[ $COMP_WORDBREAKS = *:* ]] && COMP_WORDBREAKS=${COMP_WORDBREAKS/:/}
-    ! [[ $COMP_WORDBREAKS = *,* ]] && COMP_WORDBREAKS+=","
+    [[ $COMP_WORDBREAKS == *:* ]] && COMP_WORDBREAKS=${COMP_WORDBREAKS/:/}
+    ! [[ $COMP_WORDBREAKS == *,* ]] && COMP_WORDBREAKS+=","
 
     local CUR=${COMP_WORDS[COMP_CWORD]}
     local PREV=${COMP_WORDS[COMP_CWORD-1]} PREV_
-    [[ $PREV = "=" ]] && { PREV_=$PREV; PREV=${COMP_WORDS[COMP_CWORD-2]} ;}
+    [[ $PREV == "=" ]] && { PREV_=$PREV; PREV=${COMP_WORDS[COMP_CWORD-2]} ;}
     local IFS=$' \t\n' WORDS HELP
     local CMD=${COMP_WORDS[0]} CMD2 CMD3 CMD4
     [[ $COMP_CWORD -ge 2 && ${COMP_WORDS[1]} != -* ]] && CMD2=${COMP_WORDS[1]}
     local COMP_LINE2=${COMP_LINE:0:$COMP_POINT}
-    [[ ${COMP_LINE2: -1} = " " && -n $CUR ]] && CUR=""
+    [[ ${COMP_LINE2: -1} == " " && -n $CUR ]] && CUR=""
 
-    if [[ ${CUR:0:1} = "-" ]]; then
+    if [[ ${CUR:0:1} == "-" ]]; then
         WORDS="-h --help"
-        if (( $COMP_CWORD -eq 1 )); then
+        if (( COMP_CWORD == 1 )); then
             WORDS+=" -v --version"
             COMPREPLY=( $(compgen -W "$WORDS" -- "$CUR") )
             return
@@ -207,11 +207,11 @@ _perf()
 
     _perf_SET_CMD || return
 
-    if [[ ${CUR:0:1} = "-" ]]; then
-        if [[ $CMD2 = data ]]; then
-            [[ $CMD3 = convert ]] &&
+    if [[ ${CUR:0:1} == "-" ]]; then
+        if [[ $CMD2 == data ]]; then
+            [[ $CMD3 == convert ]] &&
             WORDS+=" --to-ctf --to-json --tod -i --input -f --force -v --verbose --all"
-        elif [[ $CMD2 = mem && $CMD3 = record ]]; then
+        elif [[ $CMD2 == mem && $CMD3 == record ]]; then
             WORDS+=" -e --event -K --all-kernel -U --all-user -v --verbose --ldlat"
         else 
             HELP=$( sudo $CMD $CMD2 $CMD3 $CMD4 -h 2>&1 )
@@ -295,7 +295,7 @@ _perf()
         esac
     fi
 
-    [[ $CUR = "," || ($CUR = "=" && ${PREV:0:1} = "-") ]] && CUR=""
+    [[ $CUR == "," || ($CUR == "=" && ${PREV:0:1} == "-") ]] && CUR=""
     COMPREPLY=( $(compgen -W "$WORDS" -- "$CUR") )
     [ "${COMPREPLY: -1}" = "=" ] && compopt -o nospace
 }
