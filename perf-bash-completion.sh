@@ -194,7 +194,7 @@ _perf()
 
     if [[ ${CUR:0:1} = "-" ]]; then
         WORDS="-h --help"
-        if [[ $COMP_CWORD -eq 1 ]]; then
+        if (( $COMP_CWORD -eq 1 )); then
             WORDS+=" -v --version"
             COMPREPLY=( $(compgen -W "$WORDS" -- "$CUR") )
             return
