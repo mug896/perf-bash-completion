@@ -184,12 +184,14 @@ _perf()
     ! [[ $COMP_WORDBREAKS == *,* ]] && COMP_WORDBREAKS+=","
 
     local CUR=${COMP_WORDS[COMP_CWORD]} PREV=$3 PREV_
+    [[ ${COMP_LINE:COMP_POINT-1:1} = " " ]] && CUR=""
     [[ $PREV == "=" ]] && { PREV_=$PREV; PREV=${COMP_WORDS[COMP_CWORD-2]} ;}
     local IFS=$' \t\n' WORDS HELP
     local CMD=$1 CMD2 CMD3 CMD4
     [[ $COMP_CWORD -ge 2 && ${COMP_WORDS[1]} != -* ]] && CMD2=${COMP_WORDS[1]}
     local COMP_LINE2=${COMP_LINE:0:$COMP_POINT}
-    [[ ${COMP_LINE2: -1} == " " && -n $CUR ]] && CUR=""
+
+    [[ ${COMP_LINE:COMP_POINT-1:1} = " " ]] && CUR=""
 
     if [[ ${CUR:0:1} == "-" ]]; then
         WORDS="-h --help"
