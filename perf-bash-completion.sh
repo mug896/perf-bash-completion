@@ -183,7 +183,7 @@ _perf()
     [[ $COMP_WORDBREAKS == *:* ]] && COMP_WORDBREAKS=${COMP_WORDBREAKS/:/}
     ! [[ $COMP_WORDBREAKS == *,* ]] && COMP_WORDBREAKS+=","
 
-    local CUR=${COMP_WORDS[COMP_CWORD]} PREV=$3 PREV_
+    local CUR=${COMP_WORDS[COMP_CWORD]} PREV=${COMP_WORDS[COMP_CWORD-1]} PREV_
     [[ ${COMP_LINE:COMP_POINT-1:1} = " " ]] && CUR=""
     [[ $PREV == "=" ]] && { PREV_=$PREV; PREV=${COMP_WORDS[COMP_CWORD-2]} ;}
     local IFS=$' \t\n' WORDS HELP
