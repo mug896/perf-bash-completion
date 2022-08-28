@@ -191,8 +191,6 @@ _perf()
     [[ $COMP_CWORD -ge 2 && ${COMP_WORDS[1]} != -* ]] && CMD2=${COMP_WORDS[1]}
     local COMP_LINE2=${COMP_LINE:0:$COMP_POINT}
 
-    [[ ${COMP_LINE:COMP_POINT-1:1} = " " ]] && CUR=""
-
     if [[ ${CUR:0:1} == "-" ]]; then
         WORDS="-h --help"
         if (( COMP_CWORD == 1 )); then
@@ -214,6 +212,8 @@ _perf()
             WORDS+=" --to-ctf --to-json --tod -i --input -f --force -v --verbose --all"
         elif [[ $CMD2 == mem && $CMD3 == record ]]; then
             WORDS+=" -e --event -K --all-kernel -U --all-user -v --verbose --ldlat"
+        elif [[ $CMD2 == sched && $CMD3 == record ]]; then
+            WORDS+=" -e --event"
         else 
             HELP=$( sudo $CMD $CMD2 $CMD3 $CMD4 -h 2>&1 )
             WORDS+=" "$( echo "$HELP" | sed -En '/^ +-/{ s/^\s{,15}((-\w),?\s)?(--[[:alnum:]_-]+=?)?.*/\2 \3/p }' )
