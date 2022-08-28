@@ -212,8 +212,6 @@ _perf()
             WORDS+=" --to-ctf --to-json --tod -i --input -f --force -v --verbose --all"
         elif [[ $CMD2 == mem && $CMD3 == record ]]; then
             WORDS+=" -e --event -K --all-kernel -U --all-user -v --verbose --ldlat"
-        elif [[ $CMD2 == sched && $CMD3 == record ]]; then
-            WORDS+=" -e --event"
         else 
             HELP=$( sudo $CMD $CMD2 $CMD3 $CMD4 -h 2>&1 )
             WORDS+=" "$( echo "$HELP" | sed -En '/^ +-/{ s/^\s{,15}((-\w),?\s)?(--[[:alnum:]_-]+=?)?.*/\2 \3/p }' )
