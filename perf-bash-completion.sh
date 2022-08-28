@@ -215,9 +215,9 @@ _perf()
         else 
             HELP=$( sudo $CMD $CMD2 $CMD3 $CMD4 -h 2>&1 )
             WORDS+=" "$( echo "$HELP" | sed -En '/^ +-/{ s/^\s{,15}((-\w),?\s)?(--[[:alnum:]_-]+=?)?.*/\2 \3/p }' )
-            [[ $WORDS =~ "--children" ]] && WORDS+=" --no-children"
-            [[ $WORDS =~ "--demangle" ]] && WORDS+=" --no-demangle"
-            [[ $WORDS =~ "--demangle-kernel" ]] && WORDS+=" --no-demangle-kernel"
+            [[ $WORDS == *--children* ]] && WORDS+=" --no-children"
+            [[ $WORDS == *--demangle* ]] && WORDS+=" --no-demangle"
+            [[ $WORDS == *--demangle-kernel* ]] && WORDS+=" --no-demangle-kernel"
         fi
     else
         [[ $COMP_LINE2 =~ .*" "(-[[:alnum:]-]+)(" "|"=") ]]
