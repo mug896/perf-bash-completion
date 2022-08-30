@@ -129,7 +129,7 @@ _perf_trace()
 }
 _perf_SET_CMD()
 {
-    if [[ ${PREV:0:1} == "-" && ${CUR:0:1} != "-" ]]; then
+    if [[ ${PREV:0:1} == "-" && $CUR != -* ]]; then
         local COMP_LINE=${COMP_LINE%$PREV[ =]*}
     else
         local COMP_LINE=${COMP_LINE% *}
@@ -193,7 +193,7 @@ _perf()
     [[ $COMP_CWORD -ge 2 && ${COMP_WORDS[1]} != -* ]] && CMD2=${COMP_WORDS[1]}
     local COMP_LINE2=${COMP_LINE:0:$COMP_POINT}
 
-    if [[ ${CUR:0:1} == "-" ]]; then
+    if [[ $CUR == -* ]]; then
         WORDS="-h --help"
         if (( COMP_CWORD == 1 )); then
             WORDS+=" -v --version"
@@ -208,7 +208,7 @@ _perf()
 
     _perf_SET_CMD || return
 
-    if [[ ${CUR:0:1} == "-" ]]; then
+    if [[ $CUR == -* ]]; then
         if [[ $CMD2 == data ]]; then
             [[ $CMD3 == convert ]] &&
             WORDS+=" --to-ctf --to-json --tod -i --input -f --force -v --verbose --all"
