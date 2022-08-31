@@ -296,7 +296,7 @@ _perf()
         esac
     fi
 
-    [[ $CUR == "," || ($CUR == "=" && ${PREV:0:1} == "-") ]] && CUR=""
+    [[ $CUR == "," || ($CUR == "=" && $PREV == -*) ]] && CUR=""
     COMPREPLY=( $(compgen -W "$WORDS" -- "$CUR") )
     [ "${COMPREPLY: -1}" = "=" ] && compopt -o nospace
 }
