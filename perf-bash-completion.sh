@@ -129,7 +129,7 @@ _perf_trace()
 }
 _perf_SET_CMD()
 {
-    if [[ ${PREV:0:1} == "-" && $CUR != -* ]]; then
+    if [[ $PREV == -* && $CUR != -* ]]; then
         local COMP_LINE=${COMP_LINE%$PREV[ =]*}
     else
         local COMP_LINE=${COMP_LINE% *}
