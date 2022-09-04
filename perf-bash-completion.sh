@@ -179,12 +179,12 @@ _init_WORDBREAKS ()
 {
     if [[ $PROMPT_COMMAND == *"COMP_WORDBREAKS="* ]]; then
         [[ $PROMPT_COMMAND =~ ^:\ ([^;]*)\; ]]
-        [[ ${BASH_REMATCH[1]} != ${COMP_WORDS[0]} ]] && eval "$PROMPT_COMMAND"
+        [[ ${BASH_REMATCH[1]} != ${COMP_WORDS[0]} ]] && eval "${PROMPT_COMMAND%%$'\a'*}"
     fi
     if [[ $PROMPT_COMMAND != *"COMP_WORDBREAKS="* ]]; then
         _PROMPT_COMMAND_BAK=${PROMPT_COMMAND%;*( )}
         PROMPT_COMMAND=": ${COMP_WORDS[0]}; COMP_WORDBREAKS=${COMP_WORDBREAKS@Q}; "
-        PROMPT_COMMAND+=$_PROMPT_COMMAND_BAK'; PROMPT_COMMAND=$_PROMPT_COMMAND_BAK'
+        PROMPT_COMMAND+='PROMPT_COMMAND=$_PROMPT_COMMAND_BAK;'$': \a;'$_PROMPT_COMMAND_BAK
     fi
 }
 _perf() 
