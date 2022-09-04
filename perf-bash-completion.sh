@@ -179,7 +179,7 @@ _init_WORDBREAKS ()
 {
     if [[ $PROMPT_COMMAND == *"COMP_WORDBREAKS="* ]]; then
         [[ $PROMPT_COMMAND =~ ^:\ ([^;]*)\; ]]
-        [[ ${BASH_REMATCH[1]} != ${COMP_WORDS[0]} ]] && PROMPT_COMMAND=$_PROMPT_COMMAND_BAK
+        [[ ${BASH_REMATCH[1]} != ${COMP_WORDS[0]} ]] && eval "$PROMPT_COMMAND"
     fi
     if [[ $PROMPT_COMMAND != *"COMP_WORDBREAKS="* ]]; then
         _PROMPT_COMMAND_BAK=${PROMPT_COMMAND%;*( )}
