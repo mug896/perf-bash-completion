@@ -190,7 +190,7 @@ _init_WORDBREAKS()
 _perf() 
 {
     # It is recommended that every completion functions start with _init_WORDBREAKS, 
-    # whether or not they change the WORDBREAKS variable afterward.
+    # whether or not they change the COMP_WORDBREAKS variable afterward.
     _init_WORDBREAKS
     [[ $COMP_WORDBREAKS == *:* ]] && COMP_WORDBREAKS=${COMP_WORDBREAKS/:/}
     ! [[ $COMP_WORDBREAKS == *,* ]] && COMP_WORDBREAKS+=","
