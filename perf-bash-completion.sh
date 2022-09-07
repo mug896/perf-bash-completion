@@ -226,7 +226,7 @@ _perf()
             WORDS+=" -e --event -K --all-kernel -U --all-user -v --verbose --ldlat"
         else 
             HELP=$( sudo $CMD $CMD2 $CMD3 $CMD4 -h 2>&1 )
-            WORDS+=" "$( echo "$HELP" | sed -En '/^ +-/{ s/^\s{,15}((-\w),?\s)?(--[[:alnum:]_-]+=?)?.*/\2 \3/p }' )
+            WORDS+=" "$( <<< $HELP sed -En '/^ +-/{ s/^\s{,15}((-\w),?\s)?(--[[:alnum:]_-]+=?)?.*/\2 \3/p }' )
             [[ $WORDS == *--children* ]] && WORDS+=" --no-children"
             [[ $WORDS == *--demangle* ]] && WORDS+=" --no-demangle"
             [[ $WORDS == *--demangle-kernel* ]] && WORDS+=" --no-demangle-kernel"
