@@ -177,12 +177,12 @@ _perf_CHECK()
 }
 _init_comp_wordbreaks()
 {
-    if [[ $PROMPT_COMMAND == *"COMP_WORDBREAKS="* ]]; then
+    if [[ $PROMPT_COMMAND == *";COMP_WORDBREAKS="* ]]; then
         [[ $PROMPT_COMMAND =~ ^:\ ([^;]+)\; ]]
         [[ ${BASH_REMATCH[1]} != ${COMP_WORDS[0]} ]] && eval "${PROMPT_COMMAND%%$'\n'*}"
     fi
-    if [[ $PROMPT_COMMAND != *"COMP_WORDBREAKS="* ]]; then
-        PROMPT_COMMAND=": ${COMP_WORDS[0]}; COMP_WORDBREAKS=${COMP_WORDBREAKS@Q};\
+    if [[ $PROMPT_COMMAND != *";COMP_WORDBREAKS="* ]]; then
+        PROMPT_COMMAND=": ${COMP_WORDS[0]};COMP_WORDBREAKS=${COMP_WORDBREAKS@Q};\
         "$'PROMPT_COMMAND=${PROMPT_COMMAND#*$\'\\n\'}\n'$PROMPT_COMMAND
     fi
 }
