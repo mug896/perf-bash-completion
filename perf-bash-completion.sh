@@ -127,7 +127,7 @@ _perf_trace()
         _perf_record
     fi
 }
-_perf_set_cmd()
+_perf_set_cmds()
 {
     if [[ $PREV == -* && $CUR != -* ]]; then
         local COMP_LINE=${COMP_LINE%$PREV[ =]*}
@@ -219,7 +219,7 @@ _perf()
         return
     fi
 
-    _perf_set_cmd || return
+    _perf_set_cmds || return
 
     if [[ $CUR == -* ]]; then
         if [[ $CMD2 == data ]]; then
