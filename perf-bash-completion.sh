@@ -194,6 +194,10 @@ _perf()
     [[ $COMP_WORDBREAKS == *:* ]] && COMP_WORDBREAKS=${COMP_WORDBREAKS/:/}
     ! [[ $COMP_WORDBREAKS == *,* ]] && COMP_WORDBREAKS+=","
 
+    local extglob_reset=$(shopt -p extglob)
+    trap "$extglob_reset" RETURN
+    shopt -s extglob
+
     local CUR=${COMP_WORDS[COMP_CWORD]} PREV=${COMP_WORDS[COMP_CWORD-1]} PREV_
     [[ ${COMP_LINE:COMP_POINT-1:1} = " " ]] && CUR=""
     [[ $PREV == "=" ]] && { PREV_=$PREV; PREV=${COMP_WORDS[COMP_CWORD-2]} ;}
