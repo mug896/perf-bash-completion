@@ -1,34 +1,34 @@
 _perf_c2c() 
 {
-    if _perf_CHECK @ "$CMD3"; then
+    if _perf_check @ "$CMD3"; then
         WORDS="record report" 
-    elif [[ $CMD3 == record ]] && _perf_CHECK -e --event; then
+    elif [[ $CMD3 == record ]] && _perf_check -e --event; then
         WORDS=$( sudo $CMD c2c record -e list |& awk '{print $1}' ) 
     fi
 }
 _perf_diff() 
 {
-    if _perf_CHECK -c --compute; then
+    if _perf_check -c --compute; then
         WORDS="delta ratio wdiff cycles delta-abs"
-    elif _perf_CHECK -s --sort; then
+    elif _perf_check -s --sort; then
         WORDS=$SORT
     fi
 }
 _perf_ftrace() 
 {
-    if _perf_CHECK -t --tracer; then
+    if _perf_check -t --tracer; then
         WORDS="function_graph function"
-    elif _perf_CHECK --func-opts; then
+    elif _perf_check --func-opts; then
         WORDS="call-graph irq-info"
-    elif _perf_CHECK --graph-opts; then
+    elif _perf_check --graph-opts; then
         WORDS="nosleep-time noirqs verbose thresh= depth="
     fi
 }
 _perf_kmem() 
 {
-    if _perf_CHECK -s --sort; then
+    if _perf_check -s --sort; then
         WORDS="ptr callsite bytes hit pingpong frag page callsite bytes hit order migtype gfp"
-    elif _perf_CHECK @ "$CMD3"; then
+    elif _perf_check @ "$CMD3"; then
         WORDS="record stat"
     elif [[ $CMD3 == record ]]; then
         _perf_record
@@ -36,7 +36,7 @@ _perf_kmem()
 }
 _perf_kvm() 
 {
-    if _perf_CHECK @ "$CMD3"; then
+    if _perf_check @ "$CMD3"; then
         WORDS="top record report diff buildid-list stat"
     elif [[ $CMD3 == top ]]; then _perf_top
     elif [[ $CMD3 == record ]]; then _perf_record
@@ -45,43 +45,43 @@ _perf_kvm()
     elif [[ $CMD3 == stat && -z $CMD4 && -z $WORDS ]]; then
         WORDS="record report live"
     elif [[ $CMD3 == stat && $CMD4 == @(live|report) ]]; then
-        _perf_CHECK --event && WORDS="vmexit mmio ioport"
+        _perf_check --event && WORDS="vmexit mmio ioport"
     fi
 }
 _perf_record() 
 {
-    if _perf_CHECK --call-graph; then
+    if _perf_check --call-graph; then
         WORDS="fp dwarf lbr"
     fi
 }
 _perf_report() 
 {
-    if _perf_CHECK -F --fields; then
+    if _perf_check -F --fields; then
         WORDS=$SORT
-    elif _perf_CHECK -g --call-graph; then
+    elif _perf_check -g --call-graph; then
         WORDS="graph flat fractal folded none caller callee function address percent period count"
-    elif _perf_CHECK -s --sort; then
+    elif _perf_check -s --sort; then
         WORDS=$SORT
     fi
 }
 _perf_lock() 
 {
-    if _perf_CHECK @ "$CMD3"; then
+    if _perf_check @ "$CMD3"; then
         WORDS="record report script info"
     elif [[ $CMD3 == script ]]; then
         _perf_script
-    elif [[ $CMD3 == report ]] && _perf_CHECK -k --key; then
+    elif [[ $CMD3 == report ]] && _perf_check -k --key; then
         WORDS="acquired contended avg_wait wait_total wait_max wait_min"
     fi
 }
 _perf_script()
 {
-    if _perf_CHECK -F --fields; then
+    if _perf_check -F --fields; then
         WORDS="comm tid pid time cpu event trace ip sym dso addr symoff srcline period
         iregs uregs brstack brstacksym flags bpf-output brstackinsn brstackoff callindent
         insn insnlen synth phys_addr metric misc srccode ipc data_page_size code_page_size
         trace: sw: hw:"
-    elif _perf_CHECK @ "$CMD3"; then
+    elif _perf_check @ "$CMD3"; then
         WORDS="record report"
     elif [[ $CMD3 == record ]]; then
         _perf_record
@@ -89,45 +89,45 @@ _perf_script()
 }
 _perf_top() 
 { 
-    if _perf_CHECK -s --sort --fields; then
+    if _perf_check -s --sort --fields; then
         WORDS=$SORT
     fi
 }
 _perf_mem() 
 {
-    if _perf_CHECK -t --type; then
+    if _perf_check -t --type; then
         WORDS="load store"
-    elif _perf_CHECK @ "$CMD3"; then
+    elif _perf_check @ "$CMD3"; then
         WORDS="record report" 
-    elif [[ $CMD3 == record ]] && _perf_CHECK -e --event; then
+    elif [[ $CMD3 == record ]] && _perf_check -e --event; then
         WORDS=$( sudo $CMD mem record -e list |& awk '{print $1}' )
     fi
 }
 _perf_sched() 
 {
-    if _perf_CHECK @ "$CMD3"; then
+    if _perf_check @ "$CMD3"; then
         WORDS="record latency map replay script timehist"
     elif [[ $CMD3 == record ]]; then
         _perf_record
     elif [[ $CMD3 == script ]]; then
         _perf_script
-    elif [[ $CMD3 == latency ]] && _perf_CHECK -s --sort; then
+    elif [[ $CMD3 == latency ]] && _perf_check -s --sort; then
         WORDS="runtime switch avg max"
     fi
 }
 _perf_trace() 
 {
-    if _perf_CHECK -F --pf; then
+    if _perf_check -F --pf; then
         WORDS="all maj min"
-    elif _perf_CHECK --call-graph; then
+    elif _perf_check --call-graph; then
         WORDS="fp dwarf lbr"
-    elif _perf_CHECK @ "$CMD3"; then
+    elif _perf_check @ "$CMD3"; then
         WORDS="record" 
     elif [[ $CMD3 == record ]]; then
         _perf_record
     fi
 }
-_perf_SET_CMD()
+_perf_set_cmd()
 {
     if [[ $PREV == -* && $CUR != -* ]]; then
         local COMP_LINE=${COMP_LINE%$PREV[ =]*}
@@ -163,7 +163,7 @@ _perf_SET_CMD()
     esac
     return 0
 }
-_perf_CHECK()
+_perf_check()
 {
     if [[ $1 == "@" ]]; then
         [[ -z $2 && ! $CUR$PREV$PREV_ =~ ,|=|@ && -z $WORDS ]]
@@ -219,7 +219,7 @@ _perf()
         return
     fi
 
-    _perf_SET_CMD || return
+    _perf_set_cmd || return
 
     if [[ $CUR == -* ]]; then
         if [[ $CMD2 == data ]]; then
@@ -245,55 +245,55 @@ _perf()
         ipc_lbr symbol_daddr dso_daddr locked tlb mem snoop dcacheline symbol_iaddr
         phys_daddr data_page_size blocked"
 
-        if _perf_CHECK --itrace; then
+        if _perf_check --itrace; then
             WORDS="i[period] b c r x w p o e[flags] d[flags] f m t a g[len] G[len] l[len]
         L[len] sNUMBER q PERIOD[ns|us|ms|i|t]"
-        elif _perf_CHECK --percentage; then
+        elif _perf_check --percentage; then
             WORDS="relative absolute"
-        elif _perf_CHECK -g --call-graph; then
+        elif _perf_check -g --call-graph; then
             [[ $CMD2 != sched ]] &&
             WORDS="graph flat fractal folded none caller callee function address percent period count"
-        elif _perf_CHECK -M --disassembler-style; then
+        elif _perf_check -M --disassembler-style; then
             WORDS="intel"
-        elif _perf_CHECK --stdio-color; then
+        elif _perf_check --stdio-color; then
             WORDS="always never auto"
-        elif _perf_CHECK --switch-on --switch-off; then
+        elif _perf_check --switch-on --switch-off; then
             WORDS=$( sudo $CMD evlist | sed -E '/^\s*#/d' )
-        elif _perf_CHECK -I --intr-regs; then
+        elif _perf_check -I --intr-regs; then
             [[ $CMD2 != @(sched|stat) ]] &&
             WORDS=$( sudo $CMD record -I? |& sed -En '/available registers:/{ s///p }' )
-        elif _perf_CHECK --user-regs; then
+        elif _perf_check --user-regs; then
             WORDS=$( sudo $CMD record --user-regs=? |& sed -En '/available registers:/{ s///p }' )
-        elif _perf_CHECK -k --clockid; then
+        elif _perf_check -k --clockid; then
             WORDS="CLOCK_REALTIME CLOCK_REALTIME_ALARM CLOCK_REALTIME_COARSE CLOCK_TAI
             CLOCK_MONOTONIC CLOCK_MONOTONIC_COARSE CLOCK_MONOTONIC_RAW CLOCK_BOOTTIME
             CLOCK_BOOTTIME_ALARM CLOCK_PROCESS_CPUTIME_ID CLOCK_THREAD_CPUTIME_ID"
-        elif _perf_CHECK --affinity; then
+        elif _perf_check --affinity; then
             WORDS="node cpu"
-        elif _perf_CHECK -e --event --switch-output-event; then
+        elif _perf_check -e --event --switch-output-event; then
             WORDS=$( sudo $CMD list --raw-dump )
-        elif _perf_CHECK --switch-output; then
+        elif _perf_check --switch-output; then
             WORDS="signal size[BKMG] time[smhd]"
         fi
         case $CMD2 in
             annotate) ;;
             archive) ;;
-            bench) _perf_CHECK -f --format && WORDS="default simple" ;;
+            bench) _perf_check -f --format && WORDS="default simple" ;;
             buildid-cache) ;;
             buildid-list) ;;
             c2c) _perf_c2c ;;
             config) ;;
-            daemon) _perf_CHECK @ "$CMD3" && WORDS="start stop signal ping" ;;
-            data) _perf_CHECK @ "$CMD3" && WORDS="convert" ;;
+            daemon) _perf_check @ "$CMD3" && WORDS="start stop signal ping" ;;
+            data) _perf_check @ "$CMD3" && WORDS="convert" ;;
             diff) _perf_diff ;;
             evlist) ;;
             ftrace) _perf_ftrace ;;
             inject) ;;
-            iostat) _perf_CHECK @ "$CMD3" && WORDS="list" ;;
+            iostat) _perf_check @ "$CMD3" && WORDS="list" ;;
             kallsyms) ;;
             kmem) _perf_kmem ;;
             kvm) _perf_kvm ;;
-            list) _perf_CHECK @ "$CMD3" && WORDS="hw sw cache tracepoint pmu sdt metric metricgroup event_glob" ;;
+            list) _perf_check @ "$CMD3" && WORDS="hw sw cache tracepoint pmu sdt metric metricgroup event_glob" ;;
             lock) _perf_lock ;;
             mem) _perf_mem ;;
             probe) ;;
@@ -301,9 +301,9 @@ _perf()
             report) _perf_report ;;
             sched) _perf_sched ;;
             script) _perf_script ;;
-            stat) _perf_CHECK @ "$CMD3" && WORDS="record report" ;;
-            test) _perf_CHECK @ "$CMD3" && WORDS="list" ;;
-            timechart) _perf_CHECK @ "$CMD3" && WORDS="record" ;;
+            stat) _perf_check @ "$CMD3" && WORDS="record report" ;;
+            test) _perf_check @ "$CMD3" && WORDS="list" ;;
+            timechart) _perf_check @ "$CMD3" && WORDS="record" ;;
             top) _perf_top ;;
             trace) _perf_trace ;;
         esac
