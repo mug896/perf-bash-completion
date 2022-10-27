@@ -166,7 +166,7 @@ _perf_set_cmds()
 _perf_check()
 {
     if [[ $1 == "@" ]]; then
-        [[ -z $2 && ! $CUR$PREV$PREV_ =~ ,|=|@ && -z $WORDS ]]
+        [[ -z $2 && ! $CUR$PREV$PREV_ == *[,=@]* && -z $WORDS ]]
     else
         case $# in
             1) [[ $PREV == $1 || ($LPRE == $1 && $PREV$CUR == *,*) ]] ;;
