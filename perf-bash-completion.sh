@@ -206,7 +206,7 @@ _perf()
     local CMD=$1 CMD2 CMD3 CMD4
     local COMP_LINE2=${COMP_LINE:0:$COMP_POINT}
     local SCMDS=$( $CMD -h | sed -En '/perf commands are:/,/^$/{ //d; s/([[:alnum:]-]+).*/\1/; tX bZ; :X H;}; :Z ${ g; s/[ \n]+/ /g; p }' )" help"
-    [[ $COMP_LINE2 =~ ^" "*$CMD" "+((-[hv]|-vv|--help|--version|--no-pager)" "+|((--debug|--debugfs-dir|--exec-path|-p|--paginate)" "+[^ -][^ ]*" "+))*(${SCMDS// /|})" " ]]
+    [[ $COMP_LINE2 =~ ^" "*$CMD" "+((-[hvp]|-vv|--help|--version|--paginate|--no-pager)" "+|((--debug|--debugfs-dir|--exec-path)" "+[^ -][^ ]*" "+))*(${SCMDS// /|})" " ]]
     CMD2=${BASH_REMATCH[5]}
 
     if [[ $CUR == -* ]]; then
