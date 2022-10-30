@@ -206,7 +206,7 @@ _perf()
     local CMD=$1 CMD2 CMD3 CMD4
     local COMP_LINE2=${COMP_LINE:0:$COMP_POINT}
     local SCMDS=$( $CMD -h | sed -En '/perf commands are:/,/^$/{ //d; s/([[:alnum:]-]+).*/\1/; tX bZ; :X H;}; :Z ${ g; s/[ \n]+/ /g; p }' )" help"
-    [[ $COMP_LINE2 =~ ^" "*$CMD" "+((-[hvp]|-vv|--help|--version|--paginate|--no-pager|--exec-path)" "+|((--debug|--debugfs-dir)" "+[^ -][^ ]*" "+))*(${SCMDS// /|})" " ]]
+    [[ $COMP_LINE2 =~ ^" "*$CMD" "+((-[hvp]|-vv|--help|--version|--paginate|--no-pager|--exec-path)" "+|((--buildid-dir|--debugfs-dir|--debug)" "+[^ -][^ ]*" "+))*(${SCMDS// /|})" " ]]
     CMD2=${BASH_REMATCH[5]}
 
     if [[ $CUR == -* ]]; then
@@ -220,7 +220,7 @@ _perf()
         WORDS="verbose ordered-events data-convert stderr perf-event-open"
         COMPREPLY=( $(compgen -W "$WORDS" -- "$CUR") )
         return
-    elif [[ -z $CMD2 && $PREV == @(--exec-path|-p|--paginate|--buildid-dir|--debugfs-dir) ]]; then
+    elif [[ -z $CMD2 && $PREV == @(--buildid-dir|--debugfs-dir) ]]; then
         :
     elif [[ -z $CMD2 ]]; then
         COMPREPLY=( $(compgen -W "$SCMDS" -- "$CUR") )
