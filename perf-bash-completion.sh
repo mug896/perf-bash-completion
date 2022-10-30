@@ -192,7 +192,7 @@ _perf()
     # It is recommended that every completion function starts with _init_comp_wordbreaks,
     # whether or not they change the COMP_WORDBREAKS variable afterward.
     _init_comp_wordbreaks
-    [[ $COMP_WORDBREAKS == *:* ]] && COMP_WORDBREAKS=${COMP_WORDBREAKS/:/}
+    COMP_WORDBREAKS=${COMP_WORDBREAKS//:/}
     [[ $COMP_WORDBREAKS != *,* ]] && COMP_WORDBREAKS+=","
 
     local extglob_reset=$(shopt -p extglob)
