@@ -110,7 +110,7 @@ _perf_sched()
     elif [[ $CMD3 == record ]]; then
         _perf_record
     elif [[ $CMD3 == script ]]; then
-        _perf_script
+        WORDS="record report"
     elif [[ $CMD3 == latency ]] && _perf_check -s --sort; then
         WORDS="runtime switch avg max"
     fi
@@ -146,11 +146,12 @@ _perf_set_cmds()
             [[ $CMD2 == $CMD3 ]] && CMD3="" 
             ;;
         daemon|data|iostat) 
-            [[ $COMP_CWORD -ge 3 && ${COMP_WORDS[2]} != -* ]] && CMD3=${COMP_WORDS[2]}
+            [[ $COMP_LINE =~ " "+$CMD2" "+([-][[:alnum:]_-]+(" "+[^ -][^ ]*)?" "+)*([^ -][^ ]*) ]] &&
+            CMD3=${BASH_REMATCH[3]}
             ;;
         kvm)
             local ARR=($( eval "sudo $COMP_LINE -h" |&
-                sed -En '/Usage:/{ s/.*Usage: ([ [:alnum:]_-]+)( [[{].*)?/\1/p }' ))
+                sed -En '/Usage:/{ s/.*Usage: ([[:alnum:] _-]+)( [[{].*)?/\1/p }' ))
             [[ ${#ARR[@]} == 2 && ${ARR[1]} != $CMD2 ]] && CMD3=${ARR[1]}
             [[ ${#ARR[@]} == 4 ]] && { CMD3=${ARR[2]} CMD4=${ARR[3]} ;}
             ;;
@@ -203,19 +204,26 @@ _perf()
     [[ $PREV == "=" ]] && { PREV_=$PREV; PREV=${COMP_WORDS[COMP_CWORD-2]} ;}
     local IFS=$' \t\n' WORDS HELP
     local CMD=$1 CMD2 CMD3 CMD4
-    [[ $COMP_CWORD -ge 2 && ${COMP_WORDS[1]} != -* ]] && CMD2=${COMP_WORDS[1]}
     local COMP_LINE2=${COMP_LINE:0:$COMP_POINT}
+    local SCMDS=$( $CMD -h | sed -En '/perf commands are:/,/^$/{ //d; s/([[:alnum:]-]+).*/\1/; tX bZ; :X H;}; :Z ${ g; s/[ \n]+/ /g; p }' )" help"
+    [[ $COMP_LINE2 =~ ^" "*$CMD" "+((-[hv]|-vv|--help|--version|--no-pager)" "+|((--debug|--debugfs-dir|--exec-path|-p|--paginate)" "+[^ -][^ ]*" "+))*(${SCMDS// /|})" " ]]
+    CMD2=${BASH_REMATCH[5]}
 
     if [[ $CUR == -* ]]; then
         WORDS="-h --help"
-        if (( COMP_CWORD == 1 )); then
-            WORDS+=" -v --version"
+        if [[ -z $CMD2 ]]; then
+            WORDS=$( man $CMD | sed -En 's/^\s{,10}(-[[:alpha:]], -[^ ]+|-[^ ]+).*/\1/; tX; bZ; :X H; :Z ${ g; s/[ ,\n]+/ /g; p }' )
             COMPREPLY=( $(compgen -W "$WORDS" -- "$CUR") )
             return
         fi
-    elif [[ -z $CMD2 ]]; then
-        WORDS=$( $CMD -h | sed -En '/perf commands are:/,/^$/{ //d; s/([[:alnum:]-]+).*/\1/p }' )" help"
+    elif [[ $PREV == --debug ]]; then
+        WORDS="verbose ordered-events data-convert stderr perf-event-open"
         COMPREPLY=( $(compgen -W "$WORDS" -- "$CUR") )
+        return
+    elif [[ -z $CMD2 && $PREV == @(--exec-path|-p|--paginate|--buildid-dir|--debugfs-dir) ]]; then
+        :
+    elif [[ -z $CMD2 ]]; then
+        COMPREPLY=( $(compgen -W "$SCMDS" -- "$CUR") )
         return
     fi
 
