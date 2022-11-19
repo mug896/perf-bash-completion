@@ -200,11 +200,11 @@ _perf()
     shopt -s extglob
 
     local CUR=${COMP_WORDS[COMP_CWORD]} PREV=${COMP_WORDS[COMP_CWORD-1]} PREV_
-    [[ ${COMP_LINE:COMP_POINT-1:1} = " " ]] && CUR=""
+    local COMP_LINE2=${COMP_LINE:0:$COMP_POINT}
+    [[ ${COMP_LINE2: -1} = " " ]] && CUR=""
     [[ $PREV == "=" ]] && { PREV_=$PREV; PREV=${COMP_WORDS[COMP_CWORD-2]} ;}
     local IFS=$' \t\n' WORDS HELP
     local CMD=$1 CMD2 CMD3 CMD4
-    local COMP_LINE2=${COMP_LINE:0:$COMP_POINT}
     local SCMDS=$( $CMD -h | sed -En '/perf commands are:/,/^$/{ //d; s/([[:alnum:]-]+).*/\1/; tX bZ; :X H;}; :Z ${ g; s/[ \n]+/ /g; p }' )" help"
     [[ $COMP_LINE2 =~ ^" "*$CMD" "+((-[hvp]|-vv|--help|--version|--paginate|--no-pager|--exec-path)" "+|((--buildid-dir|--debugfs-dir|--debug)" "+[^ -][^ ]*" "+))*(${SCMDS// /|})" " ]]
     CMD2=${BASH_REMATCH[5]}
