@@ -3,7 +3,7 @@ _perf_c2c()
     if _perf_check @ "$CMD3"; then
         WORDS="record report" 
     elif [[ $CMD3 == record ]] && _perf_check -e --event; then
-        WORDS=$( sudo $CMD c2c record -e list |& awk '{print $1}' ) 
+        WORDS=$( $sudo $CMD c2c record -e list |& awk '{print $1}' ) 
     fi
 }
 _perf_diff() 
@@ -100,7 +100,7 @@ _perf_mem()
     elif _perf_check @ "$CMD3"; then
         WORDS="record report" 
     elif [[ $CMD3 == record ]] && _perf_check -e --event; then
-        WORDS=$( sudo $CMD mem record -e list |& awk '{print $1}' )
+        WORDS=$( $sudo $CMD mem record -e list |& awk '{print $1}' )
     fi
 }
 _perf_sched() 
@@ -137,10 +137,10 @@ _perf_set_cmds()
     fi
     case $CMD2 in
         c2c|kmem|lock|sched|script|stat|timechart|trace) 
-            CMD3=$( eval "sudo $COMP_LINE -h" |&
+            CMD3=$( eval "$sudo $COMP_LINE -h" |&
                 sed -En '/Usage:/{ s/.* ([[:alnum:]_-]+)( [[{].*)?/\1/p }' )
             if [[ -z $CMD3 ]]; then
-                echo; eval "sudo $COMP_LINE -h"
+                echo; eval "$sudo $COMP_LINE -h"
                 return 1
             fi
             [[ $CMD2 == $CMD3 ]] && CMD3="" 
@@ -150,7 +150,7 @@ _perf_set_cmds()
             CMD3=${BASH_REMATCH[3]}
             ;;
         kvm)
-            local ARR=($( eval "sudo $COMP_LINE -h" |&
+            local ARR=($( eval "$sudo $COMP_LINE -h" |&
                 sed -En '/Usage:/{ s/.*Usage: ([[:alnum:] _-]+)( [[{].*)?/\1/p }' ))
             [[ ${#ARR[@]} == 2 && ${ARR[1]} != $CMD2 ]] && CMD3=${ARR[1]}
             [[ ${#ARR[@]} == 4 ]] && { CMD3=${ARR[2]} CMD4=${ARR[3]} ;}
@@ -203,7 +203,7 @@ _perf()
     local COMP_LINE2=${COMP_LINE:0:$COMP_POINT}
     [[ ${COMP_LINE2: -1} = " " ]] && CUR=""
     [[ $PREV == "=" ]] && { PREV_=$PREV; PREV=${COMP_WORDS[COMP_CWORD-2]} ;}
-    local IFS=$' \t\n' WORDS HELP
+    local IFS=$' \t\n' WORDS HELP sudo=$( [[ $EUID != 0 ]] && echo sudo )
     local CMD=$1 CMD2 CMD3 CMD4
     local SCMDS=$( $CMD -h | sed -En '/perf commands are:/,/^$/{ //d; s/([[:alnum:]-]+).*/\1/; tX bZ; :X H;}; :Z ${ g; s/[ \n]+/ /g; p }' )" help"
     [[ $COMP_LINE2 =~ ^" "*$CMD" "+((-[hvp]|-vv|--help|--version|--paginate|--no-pager|--exec-path)" "+|((--buildid-dir|--debugfs-dir|--debug)" "+[^ -][^ ]*" "+))*(${SCMDS// /|})" " ]]
@@ -236,7 +236,7 @@ _perf()
         elif [[ $CMD2 == mem && $CMD3 == record ]]; then
             WORDS+=" -e --event -K --all-kernel -U --all-user -v --verbose --ldlat"
         else 
-            HELP=$( sudo $CMD $CMD2 $CMD3 $CMD4 -h 2>&1 )
+            HELP=$( $sudo $CMD $CMD2 $CMD3 $CMD4 -h 2>&1 )
             WORDS+=" "$( <<< $HELP sed -En '/^ +-/{ s/^\s{,15}((-\w),?\s)?(--[[:alnum:]_-]+=?)?.*/\2 \3/p }' )
             [[ $WORDS == *--children* ]] && WORDS+=" --no-children"
             [[ $WORDS == *--demangle* ]] && WORDS+=" --no-demangle"
@@ -266,12 +266,12 @@ _perf()
         elif _perf_check --stdio-color; then
             WORDS="always never auto"
         elif _perf_check --switch-on --switch-off; then
-            WORDS=$( sudo $CMD evlist | sed -E '/^\s*#/d' )
+            WORDS=$( $sudo $CMD evlist | sed -E '/^\s*#/d' )
         elif _perf_check -I --intr-regs; then
             [[ $CMD2 != @(sched|stat) ]] &&
-            WORDS=$( sudo $CMD record -I? |& sed -En '/available registers:/{ s///p }' )
+            WORDS=$( $sudo $CMD record -I? |& sed -En '/available registers:/{ s///p }' )
         elif _perf_check --user-regs; then
-            WORDS=$( sudo $CMD record --user-regs=? |& sed -En '/available registers:/{ s///p }' )
+            WORDS=$( $sudo $CMD record --user-regs=? |& sed -En '/available registers:/{ s///p }' )
         elif _perf_check -k --clockid; then
             WORDS="CLOCK_REALTIME CLOCK_REALTIME_ALARM CLOCK_REALTIME_COARSE CLOCK_TAI
             CLOCK_MONOTONIC CLOCK_MONOTONIC_COARSE CLOCK_MONOTONIC_RAW CLOCK_BOOTTIME
@@ -279,7 +279,7 @@ _perf()
         elif _perf_check --affinity; then
             WORDS="node cpu"
         elif _perf_check -e --event --switch-output-event; then
-            WORDS=$( sudo $CMD list --raw-dump )
+            WORDS=$( $sudo $CMD list --raw-dump )
         elif _perf_check --switch-output; then
             WORDS="signal size[BKMG] time[smhd]"
         fi
